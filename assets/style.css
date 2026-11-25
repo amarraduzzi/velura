@@ -129,3 +129,13 @@ footer{padding:50px 0 60px;border-top:1px solid var(--line);color:var(--mu);font
 @media(max-width:700px){.arts{grid-template-columns:1fr}}
 @media(max-width:520px){section{padding:64px 0}.myths{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.btn{width:100%;text-align:center}.card{padding:22px}.seg button{padding:9px 14px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}.lk .on{transition:none}}
+
+/* hero foto */
+.hero{position:relative;isolation:isolate}
+.hero .hbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% 60%;z-index:-2;animation:hbz 26s ease-in-out infinite alternate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(246,238,238,.78) 0,rgba(246,238,238,.5) 38%,rgba(246,238,238,0) 68%),linear-gradient(180deg,rgba(246,243,244,0) 80%,var(--bg) 100%)}
+.hero .aur,.hero .mg{display:none}
+#orbs{opacity:.55}
+@keyframes hbz{from{transform:scale(1)}to{transform:scale(1.05)}}
+@media(max-width:720px){.hero .hbg{object-position:80% 50%}.hero::before{background:linear-gradient(180deg,rgba(246,238,238,.82) 0,rgba(246,238,238,.62) 55%,rgba(246,238,238,.25) 100%),linear-gradient(180deg,rgba(246,243,244,0) 85%,var(--bg) 100%)}}
+@media(prefers-reduced-motion:reduce){.hero .hbg{animation:none!important}}

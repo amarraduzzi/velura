@@ -10,6 +10,9 @@ for _l in T:
     T[_l]["arts"]=[dict(a,done=T[_l]["done"],rel=T[_l]["rel"],fine=T[_l]["fine"]) for a in T[_l]["arts"]]
 
 AK=["sonne","reinigung","hauttyp","testen"]
+ALT={"de":{"pano":"Ruhiges Licht auf Leinen mit Pipettenflasche, Schale und Eukalyptus","sonne":"Sonnige Terrasse mit Strohhut und Glas Wasser","reinigung":"Waschbecken mit sanft bewegtem Wasser und Seifenschale","hauttyp":"Drei Keramikschalen in unterschiedlichen Oberflächen","testen":"Drei Gläser mit getrockneten Blüten, Notizbuch und Bleistift"},
+"fr":{"pano":"Lumière douce sur du lin avec flacon compte-gouttes, bol et eucalyptus","sonne":"Terrasse ensoleillée avec chapeau de paille et verre d'eau","reinigung":"Vasque avec eau doucement agitée et porte-savon","hauttyp":"Trois bols en céramique aux finitions différentes","testen":"Trois bocaux de fleurs séchées, carnet et crayon"},
+"it":{"pano":"Luce morbida su lino con flacone contagocce, ciotola ed eucalipto","sonne":"Terrazza soleggiata con cappello di paglia e bicchiere d'acqua","reinigung":"Lavabo con acqua appena mossa e portasapone","hauttyp":"Tre ciotole in ceramica con superfici diverse","testen":"Tre barattoli di fiori secchi, taccuino e matita"}}
 
 # ---------- generated placeholder artwork (soft skin-tone blobs) ----------
 def art(seed,w=1600,h=900,n=16):
@@ -32,12 +35,13 @@ def imgfile(n):
     return None
 def bg(n):
     f=imgfile(n)
-    return f' style="background-image:linear-gradient(180deg,rgba(246,243,244,.5),rgba(246,243,244,.94)),url({f});background-size:cover;background-position:center"' if f else ""
+    return f' style="background-image:linear-gradient(rgba(246,243,244,.28),rgba(246,243,244,.28)),url({f});background-size:cover;background-position:center"' if f else ""
 
 # ---------- shared parts ----------
 def head(l,title,desc,path_by_lang,self_path):
     alts="".join(f'<link rel="alternate" hreflang="{x}" href="{B}{p}">' for x,p in path_by_lang.items())+f'<link rel="alternate" hreflang="x-default" href="{B}{path_by_lang["de"]}">'
-    return f'<!doctype html><html lang="{l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title}</title><meta name="description" content="{desc}"><link rel="canonical" href="{B}{self_path}">{alts}<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:type" content="website"><meta name="theme-color" content="#f6f3f4"><link rel="icon" href="/assets/velura.svg"><link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/wow.css"><script>if(!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("wj")</script></head><body>'
+    og=f'<meta property="og:image" content="{B}/assets/img/pano.jpg">' if os.path.exists('assets/img/pano.jpg') else ''
+    return f'<!doctype html><html lang="{l}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title}</title><meta name="description" content="{desc}"><link rel="canonical" href="{B}{self_path}">{alts}<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:type" content="website">{og}<meta name="theme-color" content="#f6f3f4"><link rel="icon" href="/assets/velura.svg"><link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/wow.css"><script>if(!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("wj")</script></head><body>'
 LOGO='<svg class="lgo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="12" cy="17" r="8" fill="#efc4a8" fill-opacity=".95"/><circle cx="21" cy="17" r="8" fill="#c58a6b" fill-opacity=".85"/><circle cx="16.5" cy="11" r="7" fill="#8a3f63" fill-opacity=".8"/></svg>'
 def header(l,paths,home=True):
     t=T[l]
@@ -72,10 +76,10 @@ def rings_svg():
 def home(l):
     t=T[l];w=t["sun"];k=t["ck"];r=t["rt"];m=t["my"];f=t["fq"];n=t["pl"]
     o=head(l,t["title"],t["desc"],paths_home(),f"/{l}/")+header(l,paths_home())
-    o+=f'<section class="hero"><canvas id="orbs" aria-hidden="true"></canvas><div class="wrap"><span class="eyebrow">{t["eb"]}</span><h1>{t["h"]}</h1><p>{t["p"]}</p><div class="btns"><a class="btn g" href="#rechner">{t["b1"]}</a>{L(l,"hero",GO[l],"btn o")}</div></div></section>'
+    o+=f'<section class="hero"><img class="hbg" src="/assets/img/hero.jpg" alt="" width="1376" height="768" fetchpriority="high" decoding="async"><canvas id="orbs" aria-hidden="true"></canvas><div class="wrap"><span class="eyebrow">{t["eb"]}</span><h1>{t["h"]}</h1><p>{t["p"]}</p><div class="btns"><a class="btn g" href="#rechner">{t["b1"]}</a>{L(l,"hero",GO[l],"btn o")}</div></div></section>'
     grp="".join(f'<div class="grp"><span class="gl">{gl}</span><div class="seg" role="group" aria-label="{gl}">'+"".join(f'<button type="button" aria-pressed="{"true" if i==1 else "false"}">{x}</button>' for i,x in enumerate(opts))+'</div></div>' for (gl,opts) in w["g"])
     o+=f'<section id="rechner" class="calc"><div class="wrap"><span class="eyebrow">{w["k"]}</span><h2>{w["h"]}</h2><p class="sub">{w["p"]}</p><div class="card rv" id="calc" data-cfg="{js(dict(l=w["l"],c=w["c"]))}"><div class="grps">{grp}</div><div class="cres" aria-live="polite"></div><p class="note">{w["note"]} {L(l,"rechner")}</p></div></div></section>'
-    o+=f'<section class="pano"{bg("pano")}><p>{t["pano"]}</p>{L(l,"pano",GO[l])}</section>'
+    o+=f'<section class="pano"{bg("pano")}><div class="pk"><p>{t["pano"]}</p>{L(l,"pano",GO[l])}</div></section>'
     qs="".join(f'<div class="cq"{"" if i==0 else " hidden"}><small>{k["of"]} {i+1} / 3</small><b>{q}</b><div class="co">'+"".join(f'<button type="button" data-v="{v}">{x}</button>' for v,x in enumerate(os_))+'</div></div>' for i,(q,os_) in enumerate(k["q"]))
     res="".join(f'<div class="cr" data-k="{kk}" hidden><span class="eyebrow">{k["k"]}</span><h3>{ti}</h3><p>{d}</p></div>' for kk,(ti,d) in k["r"].items())
     a=t["arts"][2];aurl=f'/{l}/{a["slug"]}/'
@@ -89,18 +93,18 @@ def home(l):
     cfg=dict(lang=l,pr=n["pr"],dy=n["dy"])
     o+=f'<section id="plan" class="ln"><div class="wrap"><span class="eyebrow">{n["k"]}</span><h2>{n["h"]}</h2><p class="sub">{n["p"]}</p><div class="card rv" id="pcalc" data-cfg="{js(cfg)}"><div class="sls">{sls}</div><div class="cres" aria-live="polite"></div><p class="note">{n["note"]} {L(l,"plan")}</p></div></div></section>'
     fq="".join(f'<details class="rv"><summary>{q}</summary><p>{x}</p></details>' for q,x in f["c"])
-    arts="".join(f'<a class="art rv" href="/{l}/{x["slug"]}/"><i class="ac" style="background-image:url({imgfile(AK[j])})"></i><h3>{x["title"]}</h3><p>{x["lede"]}</p><span class="go">{t["tz"]["go"]}</span></a>' for j,x in enumerate(t["arts"]))
+    arts="".join(f'<a class="art rv" href="/{l}/{x["slug"]}/"><img class="ac" src="{imgfile(AK[j])}" alt="{ALT[l][AK[j]]}" width="1376" height="768" loading="lazy"><div class="at"><h3>{x["title"]}</h3><p>{x["lede"]}</p><span class="go">{t["tz"]["go"]}</span></div></a>' for j,x in enumerate(t["arts"]))
     o+=f'<section id="artikel"><div class="wrap"><span class="eyebrow">{t["tz"]["k"]}</span><div class="arts">{arts}</div></div></section><section id="faq"><div class="wrap" style="max-width:780px"><span class="eyebrow">{f["k"]}</span><h2>{f["h"]}</h2>{fq}<p class="mlink">{L(l,"faq")}</p></div></section>'
     return o+footer(l)
 
 def article(l,i0=0):
     t=T[l];a=t["arts"][i0];ps=paths_art(i0)
     o=head(l,a["title"]+" – "+BRAND,a["lede"],ps,ps[l])+header(l,ps,False)
-    o+=f'<div class="ah"{bg(AK[i0])}><div class="wrap"><span class="eyebrow">{BRAND}</span><h1>{a["title"]}</h1><p>{a["lede"]}</p></div></div><article class="body">'
+    o+=f'<div class="ah"><div class="wrap"><span class="eyebrow">{BRAND}</span><h1>{a["title"]}</h1><p>{a["lede"]}</p></div></div><article class="body">'
+    if imgfile(AK[i0]): o+=f'<figure class="pic ph"><img src="{imgfile(AK[i0])}" alt="{ALT[l][AK[i0]]}" width="1376" height="768"></figure>'
     for i,(h,p) in enumerate(a["s"]):
         o+=f'<h2>{h}</h2><p>{p}</p>'
         if i==0: o+=f'<div class="cb"><p>{MORE[l]}:</p>{L(l,"art-mid",GO[l])}</div>'
-        if i==1 and imgfile(AK[i0]): o+=f'<figure class="pic"><img src="{imgfile(AK[i0])}" alt="" width="1600" height="900" loading="lazy"></figure>'
         if i<2: o+='<div class="sep">· · ·</div>'
     o+=f'<h2>{a["ch"]}</h2><div class="chk">'+"".join(f'<label><input type="checkbox"><span>{x}</span></label>' for x in a["ci"])+f'</div><p class="done" hidden>{a["done"]} {L(l,"art-end",GO[l])}</p>'
     o+=f'<p class="fine">{a["fine"]}</p><div class="rel"><span class="eyebrow">{a["rel"]}</span><p><a class="xl" href="/{l}/#check">{t["ck"]["k"]} →</a> &nbsp; <a class="xl" href="/{l}/#rechner">{t["sun"]["k"]} →</a> {rlinks(l,a)}</p></div></article>'
