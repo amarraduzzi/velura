@@ -1,4 +1,4 @@
-MAIN="https://molitademo1.pages.dev"
+MAIN="https://molitademo2.pages.dev"
 B="https://velura-haut.ch"
 BRAND="Velura"
 UTM="velura"
